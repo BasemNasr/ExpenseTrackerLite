@@ -15,6 +15,32 @@ A native Android expense tracking app built with Jetpack Compose, featuring curr
 - **Animations**: Smooth transitions, loading animations, and list item animations
 - **Modern UI**: Material Design 3 with Jetpack Compose and enhanced styling
 
+## 📱 Screenshots
+
+<div align="center">
+  <img src="screenshots/dashboard_screen.png" alt="Dashboard Screen" width="300" />
+  <img src="screenshots/add_expense_screen.png" alt="Add Expense Screen" width="300" />
+</div>
+
+### Dashboard Screen
+- Welcome message with profile image
+- Summary cards showing total balance, income, and expenses (with distinct styling)
+- Filter chips (This Month, Last 7 Days, All) with visual highlighting
+- Paginated expense list with load more functionality
+- Delete buttons for each expense item
+- Export buttons (CSV/PDF) with loading states
+- Floating Action Button to add new expense
+- Smooth animations and transitions
+
+### Add Expense Screen
+- Category selection with icons
+- Amount input with currency symbol
+- Currency dropdown with autocomplete (fetched from API)
+- Income/Expense type selection dropdown
+- Date picker
+- Save button with validation
+- Smooth screen transitions
+
 ## 🏗️ Architecture
 
 ### Clean Architecture with MVVM
@@ -191,31 +217,6 @@ cd BassemExpenseTrackerLite
 - **targetSdk**: 35
 - **minSdk**: 24
 - **Kotlin**: 2.0.21
-
-## 📱 Screenshots
-
-### Dashboard Screen
-![Dashboard Screen](screenshots/dashboard_screen.png)
-
-- Welcome message with profile image
-- Summary cards showing total balance, income, and expenses (with distinct styling)
-- Filter chips (This Month, Last 7 Days, All) with visual highlighting
-- Paginated expense list with load more functionality
-- Delete buttons for each expense item
-- Export buttons (CSV/PDF) with loading states
-- Floating Action Button to add new expense
-- Smooth animations and transitions
-
-### Add Expense Screen
-![Add Expense Screen](screenshots/add_expense_screen.png)
-
-- Category selection with icons
-- Amount input with currency symbol
-- Currency dropdown with autocomplete (fetched from API)
-- Income/Expense type selection dropdown
-- Date picker
-- Save button with validation
-- Smooth screen transitions
 
 ## 🔧 API Integration
 
