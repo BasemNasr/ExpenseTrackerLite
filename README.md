@@ -195,6 +195,8 @@ cd BassemExpenseTrackerLite
 ## 📱 Screenshots
 
 ### Dashboard Screen
+![Dashboard Screen](screenshots/dashboard_screen.png)
+
 - Welcome message with profile image
 - Summary cards showing total balance, income, and expenses (with distinct styling)
 - Filter chips (This Month, Last 7 Days, All) with visual highlighting
@@ -205,6 +207,8 @@ cd BassemExpenseTrackerLite
 - Smooth animations and transitions
 
 ### Add Expense Screen
+![Add Expense Screen](screenshots/add_expense_screen.png)
+
 - Category selection with icons
 - Amount input with currency symbol
 - Currency dropdown with autocomplete (fetched from API)
