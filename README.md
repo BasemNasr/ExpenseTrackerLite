@@ -1,16 +1,19 @@
 # Expense Tracker Lite
 
-A native Android expense tracking app built with Jetpack Compose, featuring currency conversion, pagination, and offline support.
+A native Android expense tracking app built with Jetpack Compose, featuring currency conversion, pagination, offline support, and advanced features like export and animations.
 
 ## 🎯 Features
 
 - **Dashboard Screen**: Welcome message, profile image, total balance, income/expenses display
-- **Add Expense Screen**: Category selection, amount input, currency conversion, date picker
+- **Add Expense Screen**: Category selection, amount input, currency conversion, date picker, income/expense type selection
 - **Pagination**: 10 items per page with infinite scroll/load more functionality
-- **Currency Conversion**: Real-time conversion using open.er-api.com
+- **Currency Conversion**: Real-time conversion using open.er-api.com with autocomplete dropdown
 - **Offline Support**: Local storage with Room database
-- **Filtering**: This Month, Last 7 Days, All time filters
-- **Modern UI**: Material Design 3 with Jetpack Compose
+- **Filtering**: This Month, Last 7 Days, All time filters with visual highlighting
+- **Delete Functionality**: Delete expenses with confirmation via delete button
+- **Export Features**: Export expenses to CSV and PDF formats with share functionality
+- **Animations**: Smooth transitions, loading animations, and list item animations
+- **Modern UI**: Material Design 3 with Jetpack Compose and enhanced styling
 
 ## 🏗️ Architecture
 
@@ -23,7 +26,9 @@ ui/ → Composables & Screens
 │   └── AddExpenseScreen.kt
 ├── navigation/
 │   └── NavGraph.kt
-└── theme/
+├── theme/
+└── utils/
+    └── FileUtils.kt
 
 viewmodel/ → State, Events, ViewModel
 ├── DashboardViewModel.kt
@@ -48,6 +53,8 @@ data/ → Repository, DataSource, DTO, Mappers
 │   └── ExchangeRateApi.kt
 ├── repository/
 │   └── ExpenseRepositoryImpl.kt
+├── service/
+│   └── ExportService.kt
 └── di/
     └── AppModule.kt
 ```
@@ -60,8 +67,30 @@ data/ → Repository, DataSource, DTO, Mappers
 - **Database**: Room with Kotlin Coroutines
 - **Networking**: Retrofit, OkHttp, Moshi
 - **State Management**: StateFlow
-- **Navigation**: Navigation Compose
+- **Navigation**: Navigation Compose with animations
+- **Export**: Apache Commons CSV, iText7 PDF
+- **File Sharing**: Android FileProvider
 - **Testing**: JUnit, Coroutines Test, Turbine
+
+## 🎨 UI/UX Features
+
+### Animations
+- **Screen Transitions**: Smooth slide animations between Dashboard and Add Expense screens
+- **Loading Animations**: Custom animated loading indicator with pulsing effect
+- **List Animations**: Slide-in and fade-in animations for expense list items
+- **Interactive Feedback**: Visual feedback for user interactions
+
+### Enhanced Styling
+- **Summary Card**: Distinct background styling to differentiate from list items
+- **Filter Highlighting**: Visual indication of selected filter with Material Design chips
+- **Delete Buttons**: Red delete icons with proper touch targets
+- **Export Buttons**: Loading states with progress indicators
+
+### Export Functionality
+- **CSV Export**: Complete expense data export with proper formatting
+- **PDF Export**: Professional PDF reports with styling
+- **File Sharing**: Native Android share sheet integration
+- **Progress Feedback**: Loading indicators during export process
 
 ## 🧪 Unit Tests
 
@@ -74,7 +103,7 @@ app/src/test/java/com/bn/bassemexpensetrackerlite/
 ├── AddExpenseViewModelTest.kt
 ├── ConvertToUsdUseCaseTest.kt
 ├── DashboardViewModelTest.kt
-└── SimpleTest.kt
+└── ExpenseRepositoryTest.kt
 ```
 
 ### Test Coverage
@@ -82,6 +111,8 @@ app/src/test/java/com/bn/bassemexpensetrackerlite/
 #### 1. AddExpenseViewModelTest
 - **`invalid amount shows error`**: Tests validation logic for negative/zero amounts
 - **`save converts EUR to USD and persists`**: Tests currency conversion and persistence
+- **`currency selection updates available currencies`**: Tests currency dropdown functionality
+- **`income type selection works correctly`**: Tests expense/income type switching
 
 #### 2. ConvertToUsdUseCaseTest
 - **`converts using rates map`**: Tests EUR to USD conversion (10 EUR → 20 USD)
@@ -90,6 +121,15 @@ app/src/test/java/com/bn/bassemexpensetrackerlite/
 #### 3. DashboardViewModelTest
 - **`loads first page and totals`**: Tests initial data loading and totals calculation
 - **`can load more when data available`**: Tests pagination functionality
+- **`delete expense removes item and refreshes data`**: Tests delete functionality
+- **`export to CSV generates correct format`**: Tests CSV export functionality
+- **`export to PDF generates correct format`**: Tests PDF export functionality
+
+#### 4. ExpenseRepositoryTest
+- **`insert expense returns valid id`**: Tests expense insertion
+- **`delete expense removes from database`**: Tests expense deletion
+- **`get expenses paged returns correct data`**: Tests pagination
+- **`fetch rates returns valid data`**: Tests API integration
 
 ### Running Tests
 
@@ -156,18 +196,22 @@ cd BassemExpenseTrackerLite
 
 ### Dashboard Screen
 - Welcome message with profile image
-- Summary cards showing total balance, income, and expenses
-- Filter chips (This Month, Last 7 Days, All)
+- Summary cards showing total balance, income, and expenses (with distinct styling)
+- Filter chips (This Month, Last 7 Days, All) with visual highlighting
 - Paginated expense list with load more functionality
+- Delete buttons for each expense item
+- Export buttons (CSV/PDF) with loading states
 - Floating Action Button to add new expense
+- Smooth animations and transitions
 
 ### Add Expense Screen
 - Category selection with icons
 - Amount input with currency symbol
 - Currency dropdown with autocomplete (fetched from API)
-- Income/Expense type selection
+- Income/Expense type selection dropdown
 - Date picker
 - Save button with validation
+- Smooth screen transitions
 
 ## 🔧 API Integration
 
@@ -176,22 +220,24 @@ cd BassemExpenseTrackerLite
 - **Free tier**: No API key required
 - **Rate limits**: 1000 requests per month
 - **Fallback**: Mock data for offline scenarios
+- **Dynamic Currency List**: Fetches all available currencies for dropdown
 
 ### Supported Currencies
-- USD, EUR, GBP, AED, SAR, EGP, and more (fetched dynamically)
+- USD, EUR, GBP, AED, SAR, EGP, and more (fetched dynamically from API)
 
 ## 📊 Pagination Strategy
 
 - **Page Size**: 10 items per page
 - **Implementation**: Local pagination using Room database
-- **Loading States**: Loading indicators and error handling
+- **Loading States**: Animated loading indicators and error handling
 - **Filter Integration**: Pagination works with all filters (This Month, Last 7 Days, All)
+- **Delete Integration**: List refreshes automatically after deletion
 
 ## 🗄️ Data Storage
 
 ### Room Database
 - **Entity**: ExpenseEntity with all expense fields
-- **DAO**: ExpenseDao with pagination and aggregation methods
+- **DAO**: ExpenseDao with pagination, aggregation, and delete methods
 - **Database**: AppDatabase with Room configuration
 
 ### DataStore (Planned)
@@ -199,14 +245,35 @@ cd BassemExpenseTrackerLite
 - App settings
 - Currency preferences
 
+## 📤 Export Features
+
+### CSV Export
+- **Format**: Standard CSV with headers
+- **Content**: All expense fields (Date, Category, Amount, Currency, USD Amount, Type)
+- **Sharing**: Native Android share sheet
+- **File Handling**: Temporary file creation and cleanup
+
+### PDF Export
+- **Format**: Professional PDF report
+- **Content**: Formatted expense data with styling
+- **Sharing**: Native Android share sheet
+- **File Handling**: Temporary file creation and cleanup
+
+### File Management
+- **Permissions**: Handles storage permissions gracefully
+- **FileProvider**: Secure file sharing implementation
+- **Cleanup**: Automatic temporary file cleanup
+
 ## 🎨 Design Implementation
 
-The app closely follows the provided Dribbble design:
+The app closely follows the provided Dribbble design with enhancements:
 - **Typography**: Material Design 3 typography scale
 - **Colors**: Material Design 3 color system
 - **Shapes**: Rounded corners and elevation
 - **Spacing**: Consistent 8dp grid system
 - **Icons**: Material Design icons
+- **Animations**: Smooth transitions and micro-interactions
+- **Visual Hierarchy**: Distinct styling for different UI components
 
 ## 🐛 Known Issues
 
@@ -216,13 +283,18 @@ The app closely follows the provided Dribbble design:
 
 ## 🔮 Future Enhancements
 
-- [ ] Export expenses to CSV/PDF
+- [x] ~~Export expenses to CSV/PDF~~ ✅ **COMPLETED**
+- [x] ~~Delete functionality for expenses~~ ✅ **COMPLETED**
+- [x] ~~Animations and transitions~~ ✅ **COMPLETED**
+- [x] ~~Enhanced UI styling~~ ✅ **COMPLETED**
 - [ ] Receipt image upload and storage
 - [ ] Budget tracking and alerts
 - [ ] Category management
 - [ ] Data backup and sync
 - [ ] Dark theme support
 - [ ] Widgets for quick expense entry
+- [ ] Advanced filtering and search
+- [ ] Expense analytics and charts
 
 ## 📄 License
 
